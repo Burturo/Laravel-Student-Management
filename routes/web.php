@@ -23,7 +23,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
     Route::post('/courses', [CourseController::class, 'store'])->name('courses.store');
     Route::put('/courses/{course}', [CourseController::class, 'update'])->name('courses.update');
-    Route::delete('/courses/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
+    Route::post('/courses/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
 });
 
 // Routes protégées par authentification

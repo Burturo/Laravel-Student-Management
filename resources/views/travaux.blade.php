@@ -123,7 +123,7 @@
                         </div>
                         <div class="col-3 d-flex justify-content-end">
                             @if ($userType !== 'Professeur')
-                                <button type="button" class="btn btn-custom-primary" data-bs-toggle="modal" data-bs-target="#createTravailModal">
+                                <button type="button" class="btn btn-custom-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                                     Envoyer
                                 </button>
                             @endif
@@ -148,7 +148,7 @@
                             <tbody>
                                 @foreach ($travaux as $travail)
                                     <tr>
-                                        <td>{{ $travail->code }}</td>
+                                        <td>{{ $travail->id }}</td>
                                         <td>{{ $travail->displayname }}</td>
                                         <td>{{ $travail->description }}</td>
                                         <td>{{ $travail->type }}</td>
@@ -162,8 +162,8 @@
                                         <td>{{ $travail->dueDate }}</td> <!-- Assurez-vous que 'date' est un objet Date valide -->
                                         <td class="tdline d-flex justify-content-end">
                                             <a href="#" class="btn btn-outline-primary me-2"><i class="fa-regular fa-eye"></i></a>
-                                            <a href="#" class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#editModal{{ $travail->code }}"><i class="fa-regular fa-pen-to-square"></i></a>
-                                            <a href="#" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $travail->code }}"><i class="fa-regular fa-trash-can"></i></a>
+                                            <a href="#" class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#editModal{{ $travail->id }}"><i class="fa-regular fa-pen-to-square"></i></a>
+                                            <a href="#" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $travail->id }}"><i class="fa-regular fa-trash-can"></i></a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -188,10 +188,10 @@
                                 <tbody>
                                 @foreach ($travaux as $travail)
                                         <tr>
-                                        <td>{{ $travail->code }}</td>
+                                        <td>{{ $travail->id }}</td>
                                         <td>{{ $travail->displayname }}</td>
                                         <td>{{ $travail->description }}</td>
-                                        <td>{{ $travail->Person->FirstName }}</td>
+                                        <td>{{ $travail->Person->firstName }}</td>
                                         <td>{{ $travail->type }}</td>
 
                                         <td>
@@ -212,14 +212,15 @@
                             @endif
 
                 @foreach ($travaux as $travail)
-                        <div class="modal fade" id="editModal{{ $travail->code }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editModalLabel{{ $travail->code }}" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal fade" id="editModal{{ $travail->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editModalLabel{{ $travail->id }}" aria-hidden="true">
+                            <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="editModalLabel{{ $travail->code }}">Modifier le travail</h5>
+                                        <h5 class="modal-title" id="editModalLabel{{ $travail->id }}">Modifier le travail</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <form action="/travaux/edit/{{ $travail->code }}" method="POST" enctype="multipart/form-data">
+                                    <form action="/travaux/update/{{ $travail->id }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
                                         <div class="modal-body">
                                             <div class="form-group">
                                                 <label for="name">Libellé</label>
@@ -240,20 +241,22 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                                            <button type="submit" class="btn btn-primary">Modifier</button>
                                         </div>
                                     </form>
                                 </div>
                             </div>
                         </div>
-                        <div class="modal fade" id="deleteModal{{ $travail->code }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteModalLabel{{ $travail->code }}" aria-hidden="true">
+                        <div class="modal fade" id="deleteModal{{ $travail->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteModalLabel{{ $travail->id }}" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="deleteModalLabel{{ $travail->code }}">Supprimer le cours</h5>
+                                        <h5 class="modal-title" id="deleteModalLabel{{ $travail->id }}">Supprimer le cours</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <form action="{{ route('travaux.destroy', $travail->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
                                         <div class="modal-body">
                                             <p>Êtes-vous sûr de vouloir supprimer ce cours ?</p>
                                         </div>
@@ -272,7 +275,7 @@
 
         <!-- Create Modal -->
         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="staticBackdropLabel">Créer un nouveau travail</h5>

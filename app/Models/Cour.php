@@ -9,6 +9,11 @@ class Cour extends Model
 {
     use HasFactory;
 
-    protected $table = 'travaux';
-    protected $fillable = ['code','displayname','description','type','document','status','dueDate','idPerson'];
+    protected $table = 'courses';
+    protected $fillable = ['code', 'displayname', 'description', 'type', 'document', 'status', 'dueDate', 'idPerson'];
+
+    public function person()
+    {
+        return $this->belongsTo(Person::class, 'idPerson');
+    }
 }

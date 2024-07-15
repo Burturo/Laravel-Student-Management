@@ -147,7 +147,7 @@
                         <tbody>
                             @foreach ($courses as $course)
                                 <tr>
-                                    <td>{{ $course->code }}</td>
+                                    <td>{{ $course->id }}</td>
                                     <td>{{ $course->displayname }}</td>
                                     <td>{{ $course->description }}</td>
                                     <td>{{ $course->type }}</td>
@@ -161,8 +161,8 @@
                                     <td>{{ $course->dueDate }}</td>
                                     <td class="tdline d-flex justify-content-end">
                                         <a href="#" class="btn btn-outline-primary me-2"><i class="fa-regular fa-eye"></i></a>
-                                        <a href="#" class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#editModal{{ $course->code }}"><i class="fa-regular fa-pen-to-square"></i></a>
-                                        <a href="#" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $course->code }}"><i class="fa-regular fa-trash-can"></i></a>
+                                        <a href="#" class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#editModal{{ $course->id }}"><i class="fa-regular fa-pen-to-square"></i></a>
+                                        <a href="#" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $course->id }}"><i class="fa-regular fa-trash-can"></i></a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -187,10 +187,10 @@
                         <tbody>
                             @foreach ($courses as $course)
                                 <tr>
-                                    <td>{{ $course->code }}</td>
+                                    <td>{{ $course->id }}</td>
                                     <td>{{ $course->displayname }}</td>
                                     <td>{{ $course->description }}</td>
-                                    <td>{{ $course->Person->FirstName }}</td>
+                                    <td>{{ $course->Person->firstName }}</td>
                                     <td>{{ $course->type }}</td>
                                     <td>
                                         @if ($course->document)
@@ -211,11 +211,11 @@
 
                 @foreach ($courses as $course)
                     <!-- Edit Modal -->
-                    <div class="modal fade" id="editModal{{ $course->code }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editModalLabel{{ $course->code }}" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal fade" id="editModal{{ $course->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editModalLabel{{ $course->id }}" aria-hidden="true">
+                        <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="editModalLabel{{ $course->code }}">Modifier le cours</h5>
+                                    <h5 class="modal-title" id="editModalLabel{{ $course->id }}">Modifier le cours</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
@@ -251,30 +251,23 @@
                     </div>
 
                     <!-- Delete Modal -->
-                    <div class="modal fade" id="deleteModal{{ $course->code }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteModalLabel{{ $course->code }}" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal fade" id="deleteModal{{ $course->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteModalLabel{{ $course->id }}" aria-hidden="true">
+                        <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="deleteModalLabel{{ $course->code }}">Supprimer le cours</h5>
+                                    <h5 class="modal-title" id="deleteModalLabel{{ $course->id }}">Supprimer le cours</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <div class="modal-body">
-                                    <!-- Confirmation message for deleting course -->
-                                    Êtes-vous sûr de vouloir supprimer ce cours ?
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                                    <form action="{{ route('courses.destroy', $course->id) }}" method="POST">
-                                        @csrf
-                                        <div class="modal-body">
-                                            <p>Êtes-vous sûr de vouloir supprimer ce cours ?</p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                                            <button type="submit" class="btn btn-danger">Supprimer</button>
-                                        </div>
-                                    </form>
-                                </div>
+                                <form action="{{ route('courses.destroy', $course->id) }}" method="POST">
+                                    @csrf
+                                    <div class="modal-body">
+                                        <p>Êtes-vous sûr de vouloir supprimer ce cours ?</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -284,7 +277,7 @@
 
         <!-- Create Modal -->
         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="staticBackdropLabel">Créer un nouveau cours</h5>
@@ -295,30 +288,30 @@
                         <form action="{{ route('courses.store') }}" method="POST">
                             @csrf
                             <div class="mb-3">
-                                <label for="exampleFormControlInput1" class="form-label">Nom :</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1" name="name" placeholder="Entrez le nom du cours">
+                                <label for="name" class="form-label">Nom :</label>
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Entrez le nom du cours">
                             </div>
                             <div class="mb-3">
-                                <label for="exampleFormControlTextarea1" class="form-label">Description</label>
-                                <textarea class="form-control" id="exampleFormControlTextarea1" name="description" rows="3"></textarea>
+                                <label for="description" class="form-label">Description</label>
+                                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
                             </div>
                             <div class="mb-3">
                                 <label for="exampleFormControlInput1" class="form-label">Type de cours :</label>
-                                <select class="form-select" aria-label="Default select example" name="type">
+                                <select class="form-select" aria-label="Default select example" name="type" id="type">
                                     <option value="" selected>Sélectionner le type de cours</option>
                                     <option value="TP">Travaux Pratique</option>
                                     <option value="TD">Travaux Dirrigé</option>
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label for="formFile" class="form-label">Télécharger un fichier</label>
-                                <input class="form-control" type="file" id="formFile" name="file">
+                                <label for="file" class="form-label">Télécharger un fichier</label>
+                                <input class="form-control" type="file" id="file" name="file">
                             </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                        <button type="submit" class="btn btn-primary">Enregistrer</button>
-                    </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </div>
                     </form>
                 </div>
             </div>

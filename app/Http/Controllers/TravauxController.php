@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Travail;
 use App\Models\Person;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TravauxController extends Controller
 {
@@ -14,7 +15,13 @@ class TravauxController extends Controller
         $user = Auth::user();
         $person = Person::where('userId', $user->id)->first();
         $userType = $person ? $person->type : null;
-        $travaux = Travail::all();
+
+        if ($userType === 'Professeur') {
+            $travaux = Travail::with('Person:id,firstName')
+                ->get();
+        } else {
+            $travaux = DB::select("select * from travaux");
+        }
         return view('travaux', compact('travaux','userType'));
     }
 
@@ -29,9 +36,35 @@ class TravauxController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'type' => 'required|string',
+            'file' => 'nullable|file|mimes:pdf,doc,docx,jpg,png',
         ]);
 
-        Travail::create($request->all());
+        //Travail::create($request->all());
+        $user = Auth::user();
+        // Handling file upload
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('uploads', $fileName, 'public');
+        } else {
+            $filePath = null;
+        }
+
+        // Getting the current date and formatting it
+        $currentDateTime = now();
+        $formattedDate = $currentDateTime->format('d-m-Y H:i:s');
+
+        DB::statement(
+            "insert into travaux (displayname, description, type, document, dueDate, idPerson) values (?, ?, ?, ?, ?, ?)",
+            [
+                $request->name,
+                $request->description,
+                $request->type,
+                $filePath,
+                $currentDateTime,
+                $user->id
+            ]
+        );
 
         return redirect()->route('travaux.index');
     }
@@ -56,8 +89,10 @@ class TravauxController extends Controller
 
     public function destroy(Travail $travail)
     {
+        //$travail = Travail::findOrFail($travail);
+        //DB::statement('delte from travaux where code=?', [$travail]);
         $travail->delete();
 
-        return redirect()->route('travaux.index');
+        return redirect()->route('travaux.index')->with('success', 'Travail deleted successfully.');
     }
 }
