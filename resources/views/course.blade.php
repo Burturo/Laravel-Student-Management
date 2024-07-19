@@ -17,8 +17,8 @@
                 <i class="fa-solid ms-5  fa-xmark btn-ferme" type="button"></i>
             </div>
             <div class="profile mt-2 p-2">
-                <img height="32px" class="img-profile" src="/images/luffy.jpg"></i>
-                <span class="profile_name ms-3">Monkey d Luffy</span>
+                <img height="32px" class="img-profile" src="/images/img_profil.jpg"></i>
+                <span class="profile_name ms-3">Burturo</span>
                 <i class="fa-solid ms-5  fa-xmark btn-ferme" type="button"></i>
             </div>
             <ul class="nav-links">
@@ -138,7 +138,6 @@
                                 <th class="tdline">Description</th>
                                 <th class="tdline">Type</th>
                                 <th class="tdline">Document</th>
-                                <th class="tdline">Date</th>
                                 <th class="tdline text-end">
                                     <div class="position-text-action">Action</div>
                                 </th>
@@ -158,7 +157,6 @@
                                             Aucun document
                                         @endif
                                     </td>
-                                    <td>{{ $course->dueDate }}</td>
                                     <td class="tdline d-flex justify-content-end">
                                         <a href="#" class="btn btn-outline-primary me-2"><i class="fa-regular fa-eye"></i></a>
                                         <a href="#" class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#editModal{{ $course->id }}"><i class="fa-regular fa-pen-to-square"></i></a>
@@ -190,7 +188,7 @@
                                     <td>{{ $course->id }}</td>
                                     <td>{{ $course->displayname }}</td>
                                     <td>{{ $course->description }}</td>
-                                    <td>{{ $course->Person->firstName }}</td>
+                                    <td>{{ $course->Person->firstname }}</td>
                                     <td>{{ $course->type }}</td>
                                     <td>
                                         @if ($course->document)
@@ -199,7 +197,7 @@
                                             Aucun document
                                         @endif
                                     </td>
-                                    <td>{{ $course->dueDate }}</td>
+                                    <td>{{ $course->due_date }}</td>
                                     <td class="tdline d-flex justify-content-end">
                                         <a href="#" class="btn btn-warning me-2"><i class="fa-solid fa-download"></i>Télécharger</a>
                                     </td>
@@ -222,6 +220,7 @@
                                     <!-- Form for editing course details -->
                                     <form action="{{ route('courses.update', $course->id) }}" method="POST">
                                         @csrf
+                                        @method('PUT')
                                         <div class="modal-body">
                                             <div class="form-group">
                                                 <label for="name">Libellé</label>
@@ -233,7 +232,11 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="type">Type</label>
-                                                <input type="text" class="form-control" id="type" name="type" value="{{ $course->type }}">
+                                                <select class="form-select" aria-label="Default select example" id="type" name="type">
+                                                    <option value="" {{ $course->type == '' ? 'selected' : '' }}>Sélectionner le type de cours</option>
+                                                    <option value="TP" {{ $course->type == 'TP' ? 'selected' : '' }}>Travaux Pratique</option>
+                                                    <option value="TD" {{ $course->type == 'TD' ? 'selected' : '' }}>Travaux Dirrigé</option>
+                                                </select>
                                             </div>
                                             <div class="form-group">
                                                 <label for="file">Document</label>
@@ -258,8 +261,9 @@
                                     <h5 class="modal-title" id="deleteModalLabel{{ $course->id }}">Supprimer le cours</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <form action="{{ route('courses.destroy', $course->id) }}" method="POST">
-                                    @csrf
+                                <form action="{{ route('courses.destroy',['course' => $course->id]) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
                                     <div class="modal-body">
                                         <p>Êtes-vous sûr de vouloir supprimer ce cours ?</p>
                                     </div>

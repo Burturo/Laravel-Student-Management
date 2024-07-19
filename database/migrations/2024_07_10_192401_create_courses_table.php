@@ -18,9 +18,9 @@ return new class extends Migration
             $table->string("type");
             $table->string("document")->nullable();
             $table->boolean("status")->default(false);
-            $table->date("dueDate");
-            $table->integer("idPerson");
-            $table->foreign("idPerson")->references('id')->on('people');
+            $table->string("due_date");
+            $table->integer("id_person");
+            $table->foreign("id_person")->references('id')->on('people');
             $table->timestamps();
         });
     }

@@ -16,14 +16,17 @@ class CourseController extends Controller
         $user = Auth::user();
         $person = Person::where('userId', $user->id)->first();
         $userType = $person ? $person->type : null;
-
         if ($userType === 'Etudiant') {
-            $courses = Cour::with('Person:id,firstName')
+            $courses = Cour::join('people', 'courses.id_person', '=', 'people.id')
+                ->select('courses.*', 'people.firstname')
                 ->get();
+            // $courses = DB::select('
+            //         select c.*, p.firstname
+            //         from courses c, people p where c.id_person = p.id
+            //     ');
         } else {
             $courses = DB::select("select * from courses");
         }
-
         return view('course', compact('courses','userType'));
     }
 
@@ -53,7 +56,7 @@ class CourseController extends Controller
         $formattedDate = $currentDateTime->format('d-m-Y H:i:s');
 
         DB::statement(
-            "insert into courses (displayname, description, type, document, dueDate, idPerson) values (?, ?, ?, ?, ?, ?)",
+            "insert into courses (displayname, description, type, document, due_date, id_person) values (?, ?, ?, ?, ?, ?)",
             [
                 $request->name,
                 $request->description,
@@ -63,42 +66,34 @@ class CourseController extends Controller
                 $user->id
             ]
         );
-        // Creating the course
-        //  Cour::create([
-        //      'name' => $request->name,
-        //      'description' => $request->description,
-        //      'type' => $request->type,
-        //      'document' => $filePath,
-        //      'dueDate' => $formattedDate,
-        //      'idPerson' => $user->id,
-        //  ]);
-
-        // Checking if the course was created
-        if ($course) {
-            return redirect()->route('courses.index')->with('success', 'Course created successfully.');
-        } else {
-            return redirect()->route('courses.index')->with('error', 'Failed to create course.');
-        }
+        return redirect()->route('courses.index');
     }
 
-    public function update(Request $request, Cour $cour)
+    public function update(Request $request,Cour $cour)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'type' => 'required|string',
+            'file' => 'nullable|file|mimes:pdf,doc,docx,jpg,png',
         ]);
 
-        $cour->update($request->all());
-
+        // Préparation des données pour la mise à jour
+        $updated = DB::table('courses')
+                    ->where('id', $cour->id)
+                    ->update([
+                        'displayname' => $request->input('name'),
+                        'description' => $request->input('description'),
+                        'type' => $request->input('type'),
+                        'updated_at' => now(),
+                    ]);
         return redirect()->route('courses.index');
     }
 
 
-    public function destroy(Course $course)
+    public function delete(Cour $cour)
     {
-        $course->delete();
-
+        $cour = DB::table('courses')->where('id', $cour->id)->delete();
         return redirect()->route('courses.index')->with('success', 'Course deleted successfully.');
     }
 }

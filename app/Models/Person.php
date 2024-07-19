@@ -10,7 +10,7 @@ class Person extends Model
     use HasFactory;
     protected $table = 'people';
 
-    protected $fillable = ['id', 'firstName', 'lastName', 'email', 'gender', 'type', 'userId'];
+    protected $fillable = ['id', 'firstname', 'lastname', 'email', 'gender', 'type', 'userId'];
 
     public function user()
     {
@@ -19,11 +19,11 @@ class Person extends Model
 
     public function courses()
     {
-        return $this->hasMany(Cour::class, 'idPerson');
+        return $this->hasMany(Cour::class, 'id_person');
     }
 
     public function travaux()
     {
-        return $this->hasMany(Travail::class, 'idPerson');
+        return $this->hasMany(Travail::class, 'id_person');
     }
 }

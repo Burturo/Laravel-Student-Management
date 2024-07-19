@@ -18,8 +18,8 @@
                 <i class="fa-solid ms-5  fa-xmark btn-ferme" type="button"></i>
             </div>
             <div class="profile mt-2 p-2">
-                <img height="32px" class="img-profile" src="/images/luffy.jpg"></i>
-                <span class="profile_name ms-3">Monkey d Luffy</span>
+                <img height="32px" class="img-profile" src="/images/img_profil.jpg"></i>
+                <span class="profile_name ms-3">Burturo</span>
                 <i class="fa-solid ms-5  fa-xmark btn-ferme" type="button"></i>
             </div>
             <ul class="nav-links">
@@ -172,7 +172,7 @@
             }
 
             var xValues = ["Courrier Envoyé",  "Courrier reçu"];
-            var yValues = [resul_cour_env, resul_cour_rec,totalCourriers];
+            var yValues = [resul_cour_env, resul_cour_rec,30];
             var barColors = ["#007716", "#FF7A00"];
 
             new Chart("myChart", {

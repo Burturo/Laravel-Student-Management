@@ -75,7 +75,7 @@ class AuthController extends Controller
 
         // Création de la personne associée
         $person = Person::create([
-            'firstName' => $request->name,
+            'firstname' => $request->name,
             'email' => $request->email,
             'userId' => $user->id,
             'type' => $request->direction,

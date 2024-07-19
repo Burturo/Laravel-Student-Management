@@ -17,8 +17,8 @@
                 <i class="fa-solid ms-5  fa-xmark btn-ferme" type="button"></i>
             </div>
             <div class="profile mt-2 p-2">
-                <img height="32px" class="img-profile" src="/images/luffy.jpg"></i>
-                <span class="profile_name ms-3">Monkey d Luffy</span>
+                <img height="32px" class="img-profile" src="/images/img_profil.jpg"></i>
+                <span class="profile_name ms-3">Burturo</span>
                 <i class="fa-solid ms-5  fa-xmark btn-ferme" type="button"></i>
             </div>
             <ul class="nav-links">
@@ -159,7 +159,7 @@
                                                 Aucun document
                                             @endif
                                         </td>
-                                        <td>{{ $travail->dueDate }}</td> <!-- Assurez-vous que 'date' est un objet Date valide -->
+                                        <td>{{ $travail->due_date }}</td> <!-- Assurez-vous que 'date' est un objet Date valide -->
                                         <td class="tdline d-flex justify-content-end">
                                             <a href="#" class="btn btn-outline-primary me-2"><i class="fa-regular fa-eye"></i></a>
                                             <a href="#" class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#editModal{{ $travail->id }}"><i class="fa-regular fa-pen-to-square"></i></a>
@@ -179,7 +179,6 @@
                                         <th class="tdline">Expéditeur</th>
                                         <th class="tdline">Type</th>
                                         <th class="tdline">Document</th>
-                                        <th class="tdline">Date</th>
                                         <th class="tdline text-end">
                                             <div class="position-text-action">Action</div>
                                         </th>
@@ -191,7 +190,7 @@
                                         <td>{{ $travail->id }}</td>
                                         <td>{{ $travail->displayname }}</td>
                                         <td>{{ $travail->description }}</td>
-                                        <td>{{ $travail->Person->firstName }}</td>
+                                        <td>{{ $travail->Person->firstname }}</td>
                                         <td>{{ $travail->type }}</td>
 
                                         <td>
@@ -201,7 +200,6 @@
                                             Aucun document
                                         @endif
                                     </td>
-                                            <td>{{ $travail->dueDate }}</td> <!-- Assurez-vous que 'date' est un objet Date valide -->
                                             <td class="tdline d-flex justify-content-end">
                                                 <a href="#" class="btn btn-warning me-2"><i class="fa-solid fa-download"></i>Télécharger</a>
                                             </td>
@@ -219,8 +217,9 @@
                                         <h5 class="modal-title" id="editModalLabel{{ $travail->id }}">Modifier le travail</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <form action="/travaux/update/{{ $travail->id }}" method="POST" enctype="multipart/form-data">
+                                    <form action="{{ route('travaux.update', ['travail' => $travail->id]) }}" method="POST">
                                     @csrf
+                                    @method('PUT')
                                         <div class="modal-body">
                                             <div class="form-group">
                                                 <label for="name">Libellé</label>
@@ -231,8 +230,12 @@
                                                 <textarea class="form-control" id="description" name="description">{{ $travail->description }}</textarea>
                                             </div>
                                             <div class="form-group">
-                                                <label for="type">Type</label>
-                                                <input type="text" class="form-control" id="type" name="type" value="{{ $travail->type }}">
+                                                <label for="type" class="form-label">Type de cours :</label>
+                                                <select class="form-select" aria-label="Default select example" id="type" name="type">
+                                                    <option value="" {{ $travail->type == '' ? 'selected' : '' }}>Sélectionner le type de cours</option>
+                                                    <option value="TP" {{ $travail->type == 'TP' ? 'selected' : '' }}>Travaux Pratique</option>
+                                                    <option value="TD" {{ $travail->type == 'TD' ? 'selected' : '' }}>Travaux Dirrigé</option>
+                                                </select>
                                             </div>
                                             <div class="form-group">
                                                 <label for="file">Document</label>
@@ -254,7 +257,7 @@
                                         <h5 class="modal-title" id="deleteModalLabel{{ $travail->id }}">Supprimer le cours</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <form action="{{ route('travaux.destroy', $travail->id) }}" method="POST">
+                                    <form action="{{ route('travaux.destroy', ['travail' => $travail->id]) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <div class="modal-body">

@@ -21,9 +21,9 @@ class DashboardController extends Controller
         ];
 
         if ($user->userType === 'Etudiant') {
-            $reporting['travauxCountByUser'] = Travail::where('idPerson', $user->id)->count();
+            $reporting['travauxCountByUser'] = Travail::where('id_person', $user->id)->count();
         } else {
-            $reporting['courseCountByUser'] = Cour::where('idPerson', $user->id)->count();
+            $reporting['courseCountByUser'] = Cour::where('id_person', $user->id)->count();
         }
 
         return view('dashboard', compact('user', 'reporting'));

@@ -21,20 +21,20 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 Route::middleware('auth')->group(function () {
     // Routes pour les cours
     Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
-    Route::post('/courses', [CourseController::class, 'store'])->name('courses.store');
-    Route::put('/courses/{course}', [CourseController::class, 'update'])->name('courses.update');
-    Route::post('/courses/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
+    Route::post('/courses/create', [CourseController::class, 'create'])->name('courses.store');
+    Route::post('/courses/{id}', [CourseController::class, 'update'])->name('courses.update');
+    Route::delete('/courses/{id}', [CourseController::class, 'delete'])->name('courses.destroy');
 });
 
 // Routes protégées par authentification
 Route::middleware('auth')->group(function () {
     // Routes pour les travaux
     Route::get('/travaux', [TravauxController::class, 'index'])->name('travaux.index');
-    Route::get('/travaux/create', [TravauxController::class, 'create'])->name('travaux.create');
-    Route::post('/travaux', [TravauxController::class, 'store'])->name('travaux.store');
-    Route::get('/travaux/{travail}/edit', [TravauxController::class, 'edit'])->name('travaux.edit');
-    Route::put('/travaux/{travail}', [TravauxController::class, 'update'])->name('travaux.update');
-    Route::delete('/travaux/{travail}', [TravauxController::class, 'destroy'])->name('travaux.destroy');
+    //Route::get('/travaux/create', [TravauxController::class, 'create'])->name('travaux.create');
+    Route::post('/travaux/create', [TravauxController::class, 'create'])->name('travaux.store');
+    //Route::get('/travaux/{travail}/edit', [TravauxController::class, 'edit'])->name('travaux.edit');
+    Route::post('/travaux/{id}', [TravauxController::class, 'update'])->name('travaux.update');
+    Route::delete('/travaux/{id}', [TravauxController::class, 'delete'])->name('travaux.destroy');
 
 
 });

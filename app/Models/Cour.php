@@ -10,10 +10,10 @@ class Cour extends Model
     use HasFactory;
 
     protected $table = 'courses';
-    protected $fillable = ['code', 'displayname', 'description', 'type', 'document', 'status', 'dueDate', 'idPerson'];
+    protected $fillable = ['code', 'displayname', 'description', 'type', 'document', 'status', 'dueDate', 'id_person'];
 
     public function person()
     {
-        return $this->belongsTo(Person::class, 'idPerson');
+        return $this->belongsTo(Person::class, 'id_person');
     }
 }

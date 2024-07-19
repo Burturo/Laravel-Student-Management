@@ -17,7 +17,8 @@ class TravauxController extends Controller
         $userType = $person ? $person->type : null;
 
         if ($userType === 'Professeur') {
-            $travaux = Travail::with('Person:id,firstName')
+            $travaux = Travail::join('people', 'travaux.id_person', '=', 'people.id')
+                ->select('travaux.*', 'people.firstname')
                 ->get();
         } else {
             $travaux = DB::select("select * from travaux");
@@ -25,12 +26,7 @@ class TravauxController extends Controller
         return view('travaux', compact('travaux','userType'));
     }
 
-    public function create()
-    {
-        return view('travaux.create');
-    }
-
-    public function store(Request $request)
+    public function create(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -55,7 +51,7 @@ class TravauxController extends Controller
         $formattedDate = $currentDateTime->format('d-m-Y H:i:s');
 
         DB::statement(
-            "insert into travaux (displayname, description, type, document, dueDate, idPerson) values (?, ?, ?, ?, ?, ?)",
+            "insert into travaux (displayname, description, type, document, due_date, id_person) values (?, ?, ?, ?, ?, ?)",
             [
                 $request->name,
                 $request->description,
@@ -74,25 +70,31 @@ class TravauxController extends Controller
         return view('travaux.edit', compact('travail'));
     }
 
-    public function update(Request $request, Travail $travail)
+    public function update(Request $request,Travail $travail)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'type' => 'required|string',
+            'file' => 'nullable|file|mimes:pdf,doc,docx,jpg,png',
         ]);
 
-        $travail->update($request->all());
+        // Préparation des données pour la mise à jour
+        $updated = DB::table('travaux')
+                    ->where('id', $travail->id)
+                    ->update([
+                        'displayname' => $request->input('name'),
+                        'description' => $request->input('description'),
+                        'type' => $request->input('type'),
+                        'updated_at' => now(),
+                    ]);
 
         return redirect()->route('travaux.index');
     }
 
-    public function destroy(Travail $travail)
+    public function delete(Travail $travail)
     {
-        //$travail = Travail::findOrFail($travail);
-        //DB::statement('delte from travaux where code=?', [$travail]);
-        $travail->delete();
-
+        $travail = DB::table('travaux')->where('id', $travail->id)->delete();
         return redirect()->route('travaux.index')->with('success', 'Travail deleted successfully.');
     }
 }
