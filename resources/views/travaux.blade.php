@@ -153,8 +153,8 @@
                                         <td>{{ $travail->description }}</td>
                                         <td>{{ $travail->type }}</td>
                                         <td>
-                                            @if ($travail->document)
-                                                <a href="{{ $travail->document }}">Télécharger</a>
+                                            @if($travail->document)
+                                                <a href="{{ asset('storage/' . $travail->document) }}" target="_blank">Voir le document</a>
                                             @else
                                                 Aucun document
                                             @endif
@@ -194,14 +194,14 @@
                                         <td>{{ $travail->type }}</td>
 
                                         <td>
-                                        @if ($travail->document)
-                                            <a href="{{ $travail->document }}">Télécharger</a>
-                                        @else
-                                            Aucun document
-                                        @endif
-                                    </td>
+                                            @if($travail->document)
+                                                <a href="{{ asset('storage/' . $travail->document) }}" target="_blank">Voir le document</a>
+                                            @else
+                                                Aucun document
+                                            @endif
+                                        </td>
                                             <td class="tdline d-flex justify-content-end">
-                                                <a href="#" class="btn btn-warning me-2"><i class="fa-solid fa-download"></i>Télécharger</a>
+                                            <a href="#" class="btn btn-warning me-2"><i class="fa-solid fa-download"></i>Télécharger</a>
                                             </td>
                                         </tr>
                                         @endforeach
@@ -217,7 +217,7 @@
                                         <h5 class="modal-title" id="editModalLabel{{ $travail->id }}">Modifier le travail</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <form action="{{ route('travaux.update', ['travail' => $travail->id]) }}" method="POST">
+                                    <form action="{{ route('travaux.update', ['travail' => $travail->id]) }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     @method('PUT')
                                         <div class="modal-body">
@@ -257,7 +257,7 @@
                                         <h5 class="modal-title" id="deleteModalLabel{{ $travail->id }}">Supprimer le cours</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <form action="{{ route('travaux.destroy', ['travail' => $travail->id]) }}" method="POST">
+                                    <form action="{{ route('travaux.destroy', ['travail' => $travail->id]) }}" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         @method('DELETE')
                                         <div class="modal-body">
@@ -286,7 +286,7 @@
                     </div>
                     <div class="modal-body">
                         <!-- Form for creating a new course -->
-                        <form action="{{ route('travaux.store') }}" method="POST">
+                        <form action="{{ route('travaux.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="mb-3">
                                 <label for="exampleFormControlInput1" class="form-label">Nom :</label>

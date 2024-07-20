@@ -7,6 +7,7 @@ use App\Models\Travail;
 use App\Models\Person;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class TravauxController extends Controller
 {
@@ -26,7 +27,7 @@ class TravauxController extends Controller
         return view('travaux', compact('travaux','userType'));
     }
 
-    public function create(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -35,17 +36,22 @@ class TravauxController extends Controller
             'file' => 'nullable|file|mimes:pdf,doc,docx,jpg,png',
         ]);
 
+
+
         //Travail::create($request->all());
         $user = Auth::user();
         // Handling file upload
+        // if ($request->hasFile('file')) {
+        //     $file = $request->file('file');
+        //     $fileName = time() . '_' . $file->getClientOriginalName();
+        //     $filePath = $file->storeAs('uploads', $fileName, 'public');
+        // } else {
+        //     $filePath = null;
+        // }
+        $filePath = null;
         if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $fileName = time() . '_' . $file->getClientOriginalName();
-            $filePath = $file->storeAs('uploads', $fileName, 'public');
-        } else {
-            $filePath = null;
+            $filePath = $request->file('file')->store('uploads', 'public');
         }
-
         // Getting the current date and formatting it
         $currentDateTime = now();
         $formattedDate = $currentDateTime->format('d-m-Y H:i:s');
@@ -79,6 +85,15 @@ class TravauxController extends Controller
             'file' => 'nullable|file|mimes:pdf,doc,docx,jpg,png',
         ]);
 
+        $filePath = $travail->document;
+        if ($request->hasFile('file')) {
+            // Supprimez l'ancien fichier s'il existe
+            if ($filePath) {
+                Storage::disk('public')->delete($filePath);
+            }
+            $filePath = $request->file('file')->store('uploads', 'public');
+        }
+
         // Préparation des données pour la mise à jour
         $updated = DB::table('travaux')
                     ->where('id', $travail->id)
@@ -86,6 +101,7 @@ class TravauxController extends Controller
                         'displayname' => $request->input('name'),
                         'description' => $request->input('description'),
                         'type' => $request->input('type'),
+                        'document' => $filePath,
                         'updated_at' => now(),
                     ]);
 
@@ -96,5 +112,22 @@ class TravauxController extends Controller
     {
         $travail = DB::table('travaux')->where('id', $travail->id)->delete();
         return redirect()->route('travaux.index')->with('success', 'Travail deleted successfully.');
+    }
+
+    public function download(Travail $travail)
+    {
+        //$travail = Travail::findOrFail($id);
+
+        if ($travail->document) {
+            $filePath = storage_path('app/' . $travail->document);
+
+            if (file_exists($filePath)) {
+                return response()->download($filePath, basename($filePath));
+            } else {
+                return redirect()->route('travaux.index')->with('error', 'File not found.');
+            }
+        } else {
+            return redirect()->route('travaux.index')->with('error', 'No document associated with this travail.');
+        }
     }
 }

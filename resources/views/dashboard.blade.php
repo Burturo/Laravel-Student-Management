@@ -115,9 +115,9 @@
                 </div>
             </nav>
             <div class="scroolAsignSubj h-100 px-4 pt-5 haut-rendbody">
-                <div class="d-flex flex-column justify-content-center py-2 px-4 mt-3" style="height: 90vh;">
-                    <div class="d-flex justify-content-between mb-5 ">
-                        <div class="col-4 card border-1 border-black shadow p-3 rounded">
+                <div class="d-flex flex-column py-2 px-4 my-md-4 my-3 " style="height: 90vh;">
+                    <div class="d-flex flex-md-row flex-column justify-content-between mb-md-5 mb-0 ">
+                        <div class="col-md-4 col-12 mb-4 mb-md-0 card border-1 border-black shadow p-3 rounded">
                             <div class="card-body">
                                 <h5 class="card-title">Nombre de cours</h4>
                                 <div class="text-end">
@@ -125,7 +125,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-4 card border-1 border-black shadow p-3 rounded">
+                        <div class="col-md-4 col-12 mb-4 mb-md-0 card border-1 border-black shadow p-3 rounded">
                             <div class="card-body">
                                 <h5 class="card-title">Nombre de Travaux</h4>
                                 {{ $reporting['totalTravauxCount'] }}
@@ -133,18 +133,18 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-3 card border-1 border-black shadow p-3 rounded">
+                        <div class="col-md-3 col-12 mb-4 mb-md-0 card border-1 border-black shadow p-3 rounded">
                             <div class="card-body">
                                 <h5 class="card-title">Nombre d'utilisateur</h4>
                                 <p class="card-text fs-5">{{ $reporting['totalUserCount'] }}</p>
                             </div>
                         </div>
                     </div>
-                    <div class="d-flex justify-content-between">
-                        <div class="col-7 card border-1 border-black shadow p-3 rounded">
+                    <div class="d-flex flex-md-row flex-column justify-content-between">
+                        <div class="col-md-7 col-12 card border-1 border-black shadow p-3 rounded">
                             <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
                         </div>
-                        <div class="col-4 card border-1 border-black shadow p-3 rounded">
+                        <div class="col-md-4 col-12 mt-4 mt-md-0 card border-1 border-black shadow p-3 rounded">
                             <div class="card-body">
                                 <h5 class="card-title border-2 border-bottom border-black">Notifications</h4> <!-- Titre de la section de notifications. -->
                                 <div class="card-body">

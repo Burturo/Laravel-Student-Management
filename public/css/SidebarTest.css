@@ -546,6 +546,14 @@ background-color: #FFF;
     padding-top: 0.3em;
     padding-bottom: 0.3em;
 }
+table tbody tr:hover{
+    background-color: #eee;
+}
+table tbody tr{
+    border-color: inherit;
+    border-style: solid;
+    border-width: 0;
+}
 .searchbar {
     width: 260px;
     outline: none;

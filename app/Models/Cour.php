@@ -10,7 +10,7 @@ class Cour extends Model
     use HasFactory;
 
     protected $table = 'courses';
-    protected $fillable = ['code', 'displayname', 'description', 'type', 'document', 'status', 'dueDate', 'id_person'];
+    protected $fillable = ['id', 'displayname', 'description', 'type', 'document', 'status', 'dueDate', 'id_person'];
 
     public function person()
     {

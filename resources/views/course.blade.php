@@ -151,8 +151,8 @@
                                     <td>{{ $course->description }}</td>
                                     <td>{{ $course->type }}</td>
                                     <td>
-                                        @if ($course->document)
-                                            <a href="{{ $course->document }}">Télécharger</a>
+                                        @if($course->document)
+                                            <a href="{{ asset('storage/' . $course->document) }}" target="_blank">Voir le document</a>
                                         @else
                                             Aucun document
                                         @endif
@@ -191,8 +191,8 @@
                                     <td>{{ $course->Person->firstname }}</td>
                                     <td>{{ $course->type }}</td>
                                     <td>
-                                        @if ($course->document)
-                                            <a href="{{ $course->document }}">Télécharger</a>
+                                        @if($course->document)
+                                            <a href="{{ asset('storage/' . $course->document) }}" target="_blank">Voir le document</a>
                                         @else
                                             Aucun document
                                         @endif
@@ -218,7 +218,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <!-- Form for editing course details -->
-                                    <form action="{{ route('courses.update', $course->id) }}" method="POST">
+                                    <form action="{{ route('courses.update', $course->id) }}" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         @method('PUT')
                                         <div class="modal-body">
@@ -261,7 +261,7 @@
                                     <h5 class="modal-title" id="deleteModalLabel{{ $course->id }}">Supprimer le cours</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <form action="{{ route('courses.destroy',['course' => $course->id]) }}" method="POST">
+                                <form action="{{ route('courses.destroy',['course' => $course->id]) }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 @method('DELETE')
                                     <div class="modal-body">
@@ -289,7 +289,7 @@
                     </div>
                     <div class="modal-body">
                         <!-- Form for creating a new course -->
-                        <form action="{{ route('courses.store') }}" method="POST">
+                        <form action="{{ route('courses.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="mb-3">
                                 <label for="name" class="form-label">Nom :</label>

@@ -43,12 +43,9 @@ class CourseController extends Controller
         ]);
 
         // Handling file upload
+        $filePath = null;
         if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $fileName = time() . '_' . $file->getClientOriginalName();
-            $filePath = $file->storeAs('uploads', $fileName, 'public');
-        } else {
-            $filePath = null;
+            $filePath = $request->file('file')->store('uploads', 'public');
         }
 
         // Getting the current date and formatting it
@@ -78,6 +75,15 @@ class CourseController extends Controller
             'file' => 'nullable|file|mimes:pdf,doc,docx,jpg,png',
         ]);
 
+        $filePath = $cour->document;
+        if ($request->hasFile('file')) {
+            // Supprimez l'ancien fichier s'il existe
+            if ($filePath) {
+                Storage::disk('public')->delete($filePath);
+            }
+            $filePath = $request->file('file')->store('uploads', 'public');
+        }
+
         // Préparation des données pour la mise à jour
         $updated = DB::table('courses')
                     ->where('id', $cour->id)
@@ -95,5 +101,22 @@ class CourseController extends Controller
     {
         $cour = DB::table('courses')->where('id', $cour->id)->delete();
         return redirect()->route('courses.index')->with('success', 'Course deleted successfully.');
+    }
+
+    public function download(Cour $cour)
+    {
+        //$travail = Travail::findOrFail($id);
+
+        if ($cour->document) {
+            $filePath = storage_path('app/' . $cour->document);
+
+            if (file_exists($filePath)) {
+                return response()->download($filePath, basename($filePath));
+            } else {
+                return redirect()->route('courses.index')->with('error', 'File not found.');
+            }
+        } else {
+            return redirect()->route('courses.index')->with('error', 'No document associated with this travail.');
+        }
     }
 }
