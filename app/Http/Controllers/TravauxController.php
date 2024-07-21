@@ -71,13 +71,10 @@ class TravauxController extends Controller
         return redirect()->route('travaux.index');
     }
 
-    public function edit(Travail $travail)
-    {
-        return view('travaux.edit', compact('travail'));
-    }
 
-    public function update(Request $request,Travail $travail)
+    public function update(Request $request,$id)
     {
+        $travail = Travail::findOrFail($id);
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
@@ -108,16 +105,16 @@ class TravauxController extends Controller
         return redirect()->route('travaux.index');
     }
 
-    public function delete(Travail $travail)
+    public function delete($id)
     {
+        $travail = Travail::findOrFail($id);
         $travail = DB::table('travaux')->where('id', $travail->id)->delete();
         return redirect()->route('travaux.index')->with('success', 'Travail deleted successfully.');
     }
 
-    public function download(Travail $travail)
+    public function download($id)
     {
-        //$travail = Travail::findOrFail($id);
-
+        $travail = Travail::findOrFail($id);
         if ($travail->document) {
             $filePath = storage_path('app/' . $travail->document);
 

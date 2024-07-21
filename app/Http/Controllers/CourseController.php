@@ -66,8 +66,9 @@ class CourseController extends Controller
         return redirect()->route('courses.index');
     }
 
-    public function update(Request $request,Cour $cour)
+    public function update(Request $request,$id)
     {
+        $course = Cour::findOrFail($id);
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
@@ -75,7 +76,7 @@ class CourseController extends Controller
             'file' => 'nullable|file|mimes:pdf,doc,docx,jpg,png',
         ]);
 
-        $filePath = $cour->document;
+        $filePath = $course->document;
         if ($request->hasFile('file')) {
             // Supprimez l'ancien fichier s'il existe
             if ($filePath) {
@@ -86,26 +87,28 @@ class CourseController extends Controller
 
         // Préparation des données pour la mise à jour
         $updated = DB::table('courses')
-                    ->where('id', $cour->id)
+                    ->where('id', $course->id)
                     ->update([
                         'displayname' => $request->input('name'),
                         'description' => $request->input('description'),
                         'type' => $request->input('type'),
+                        'document' => $filePath,
                         'updated_at' => now(),
                     ]);
         return redirect()->route('courses.index');
     }
 
 
-    public function delete(Cour $cour)
+    public function delete($id)
     {
-        $cour = DB::table('courses')->where('id', $cour->id)->delete();
+        $course = Cour::findOrFail($id);
+        $course->delete();
         return redirect()->route('courses.index')->with('success', 'Course deleted successfully.');
     }
 
-    public function download(Cour $cour)
+    public function download(Cour $id)
     {
-        //$travail = Travail::findOrFail($id);
+        $cour = Cour::findOrFail($id);
 
         if ($cour->document) {
             $filePath = storage_path('app/' . $cour->document);

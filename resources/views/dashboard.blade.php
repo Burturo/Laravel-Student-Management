@@ -68,7 +68,10 @@
                 </li>
                 <li class="footer">
                     <div class="footer-details">
-                        <a href="{{ route('logout') }}">
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             <div class="footer-content">
                                 <img src="/images/box-arrow-right.svg" alt="footer">
                             </div>

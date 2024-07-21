@@ -67,7 +67,10 @@
                 </li>
                 <li class="footer">
                     <div class="footer-details">
-                        <a href="{{ route('logout') }}">
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             <div class="footer-content">
                                 <img src="/images/box-arrow-right.svg" alt="footer">
                             </div>
@@ -160,7 +163,7 @@
                                             @endif
                                         </td>
                                         <td>{{ $travail->due_date }}</td> <!-- Assurez-vous que 'date' est un objet Date valide -->
-                                        <td class="tdline d-flex justify-content-end">
+                                        <td class="tdline d-flex justify-content-end my-1">
                                             <a href="#" class="btn btn-outline-primary me-2"><i class="fa-regular fa-eye"></i></a>
                                             <a href="#" class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#editModal{{ $travail->id }}"><i class="fa-regular fa-pen-to-square"></i></a>
                                             <a href="#" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $travail->id }}"><i class="fa-regular fa-trash-can"></i></a>
@@ -201,7 +204,10 @@
                                             @endif
                                         </td>
                                             <td class="tdline d-flex justify-content-end">
-                                            <a href="#" class="btn btn-warning me-2"><i class="fa-solid fa-download"></i>Télécharger</a>
+                                                <form action="{{ route('travaux.download', $travail->id) }}" method="GET">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-custom-primary text-white my-1"><i class="fa-solid fa-download"></i>  Télécharger</button>
+                                                </form>
                                             </td>
                                         </tr>
                                         @endforeach
@@ -217,9 +223,9 @@
                                         <h5 class="modal-title" id="editModalLabel{{ $travail->id }}">Modifier le travail</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <form action="{{ route('travaux.update', ['travail' => $travail->id]) }}" method="POST" enctype="multipart/form-data">
-                                    @csrf
-                                    @method('PUT')
+                                    <form action="{{ route('travaux.update', $travail->id) }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        @method('PUT')
                                         <div class="modal-body">
                                             <div class="form-group">
                                                 <label for="name">Libellé</label>
@@ -257,7 +263,7 @@
                                         <h5 class="modal-title" id="deleteModalLabel{{ $travail->id }}">Supprimer le cours</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <form action="{{ route('travaux.destroy', ['travail' => $travail->id]) }}" method="POST" enctype="multipart/form-data">
+                                    <form action="{{ route('travaux.destroy', $travail->id) }}" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         @method('DELETE')
                                         <div class="modal-body">

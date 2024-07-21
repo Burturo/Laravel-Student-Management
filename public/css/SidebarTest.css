@@ -577,5 +577,5 @@ table tbody tr{
 }
 .btn-custom-primary:hover{
     color: white !important;
-    font-weight: bold !important;
+    background-color: #FF7A33 !important;
 }

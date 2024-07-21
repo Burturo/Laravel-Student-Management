@@ -67,7 +67,10 @@
                 </li>
                 <li class="footer">
                     <div class="footer-details">
-                        <a href="{{ route('logout') }}">
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             <div class="footer-content">
                                 <img src="/images/box-arrow-right.svg" alt="footer">
                             </div>
@@ -144,23 +147,23 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($courses as $course)
+                            @foreach ($courses as $cour)
                                 <tr>
-                                    <td>{{ $course->id }}</td>
-                                    <td>{{ $course->displayname }}</td>
-                                    <td>{{ $course->description }}</td>
-                                    <td>{{ $course->type }}</td>
+                                    <td>{{ $cour->id }}</td>
+                                    <td>{{ $cour->displayname }}</td>
+                                    <td>{{ $cour->description }}</td>
+                                    <td>{{ $cour->type }}</td>
                                     <td>
-                                        @if($course->document)
-                                            <a href="{{ asset('storage/' . $course->document) }}" target="_blank">Voir le document</a>
+                                        @if($cour->document)
+                                            <a href="{{ asset('storage/' . $cour->document) }}" target="_blank">Voir le document</a>
                                         @else
                                             Aucun document
                                         @endif
                                     </td>
-                                    <td class="tdline d-flex justify-content-end">
+                                    <td class="tdline d-flex justify-content-end my-1">
                                         <a href="#" class="btn btn-outline-primary me-2"><i class="fa-regular fa-eye"></i></a>
-                                        <a href="#" class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#editModal{{ $course->id }}"><i class="fa-regular fa-pen-to-square"></i></a>
-                                        <a href="#" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $course->id }}"><i class="fa-regular fa-trash-can"></i></a>
+                                        <a href="#" class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#editModal{{ $cour->id }}"><i class="fa-regular fa-pen-to-square"></i></a>
+                                        <a href="#" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $cour->id }}"><i class="fa-regular fa-trash-can"></i></a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -183,23 +186,26 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($courses as $course)
+                            @foreach ($courses as $cour)
                                 <tr>
-                                    <td>{{ $course->id }}</td>
-                                    <td>{{ $course->displayname }}</td>
-                                    <td>{{ $course->description }}</td>
-                                    <td>{{ $course->Person->firstname }}</td>
-                                    <td>{{ $course->type }}</td>
+                                    <td>{{ $cour->id }}</td>
+                                    <td>{{ $cour->displayname }}</td>
+                                    <td>{{ $cour->description }}</td>
+                                    <td>{{ $cour->Person->firstname }}</td>
+                                    <td>{{ $cour->type }}</td>
                                     <td>
-                                        @if($course->document)
-                                            <a href="{{ asset('storage/' . $course->document) }}" target="_blank">Voir le document</a>
+                                        @if($cour->document)
+                                            <a href="{{ asset('storage/' . $cour->document) }}" target="_blank">Voir le document</a>
                                         @else
                                             Aucun document
                                         @endif
                                     </td>
-                                    <td>{{ $course->due_date }}</td>
+                                    <td>{{ $cour->due_date }}</td>
                                     <td class="tdline d-flex justify-content-end">
-                                        <a href="#" class="btn btn-warning me-2"><i class="fa-solid fa-download"></i>Télécharger</a>
+                                        <form action="{{ route('courses.download', $cour->id) }}" method="GET">
+                                            @csrf
+                                            <button type="submit" class="btn btn-custom-primary text-white my-1"><i class="fa-solid fa-download"></i>  Télécharger</button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach
@@ -207,35 +213,35 @@
                     </table>
                 @endif
 
-                @foreach ($courses as $course)
+                @foreach ($courses as $cour)
                     <!-- Edit Modal -->
-                    <div class="modal fade" id="editModal{{ $course->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editModalLabel{{ $course->id }}" aria-hidden="true">
+                    <div class="modal fade" id="editModal{{ $cour->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editModalLabel{{ $cour->id }}" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="editModalLabel{{ $course->id }}">Modifier le cours</h5>
+                                    <h5 class="modal-title" id="editModalLabel{{ $cour->id }}">Modifier le cours</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
                                     <!-- Form for editing course details -->
-                                    <form action="{{ route('courses.update', $course->id) }}" method="POST" enctype="multipart/form-data">
+                                    <form action="{{ route('courses.update', $cour->id) }}" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         @method('PUT')
                                         <div class="modal-body">
                                             <div class="form-group">
                                                 <label for="name">Libellé</label>
-                                                <input type="text" class="form-control" id="name" name="name" value="{{ $course->displayname }}">
+                                                <input type="text" class="form-control" id="name" name="name" value="{{ $cour->displayname }}">
                                             </div>
                                             <div class="form-group">
                                                 <label for="description">Description</label>
-                                                <textarea class="form-control" id="description" name="description">{{ $course->description }}</textarea>
+                                                <textarea class="form-control" id="description" name="description">{{ $cour->description }}</textarea>
                                             </div>
                                             <div class="form-group">
                                                 <label for="type">Type</label>
                                                 <select class="form-select" aria-label="Default select example" id="type" name="type">
-                                                    <option value="" {{ $course->type == '' ? 'selected' : '' }}>Sélectionner le type de cours</option>
-                                                    <option value="TP" {{ $course->type == 'TP' ? 'selected' : '' }}>Travaux Pratique</option>
-                                                    <option value="TD" {{ $course->type == 'TD' ? 'selected' : '' }}>Travaux Dirrigé</option>
+                                                    <option value="" {{ $cour->type == '' ? 'selected' : '' }}>Sélectionner le type de cours</option>
+                                                    <option value="TP" {{ $cour->type == 'TP' ? 'selected' : '' }}>Travaux Pratique</option>
+                                                    <option value="TD" {{ $cour->type == 'TD' ? 'selected' : '' }}>Travaux Dirrigé</option>
                                                 </select>
                                             </div>
                                             <div class="form-group">
@@ -254,16 +260,16 @@
                     </div>
 
                     <!-- Delete Modal -->
-                    <div class="modal fade" id="deleteModal{{ $course->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteModalLabel{{ $course->id }}" aria-hidden="true">
+                    <div class="modal fade" id="deleteModal{{ $cour->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteModalLabel{{ $cour->id }}" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="deleteModalLabel{{ $course->id }}">Supprimer le cours</h5>
+                                    <h5 class="modal-title" id="deleteModalLabel{{ $cour->id }}">Supprimer le cours</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <form action="{{ route('courses.destroy',['course' => $course->id]) }}" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                @method('DELETE')
+                                <form action="{{ route('courses.destroy', $cour->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
                                     <div class="modal-body">
                                         <p>Êtes-vous sûr de vouloir supprimer ce cours ?</p>
                                     </div>
@@ -275,6 +281,7 @@
                             </div>
                         </div>
                     </div>
+
                 @endforeach
             </div>
         </div>

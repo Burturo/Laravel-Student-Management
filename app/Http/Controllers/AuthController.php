@@ -14,6 +14,15 @@ class AuthController extends Controller
     {
         return view('login');
     }
+    public function logout(Request $request)
+    {
+        Auth::logout(); // Déconnecte l'utilisateur
+
+        $request->session()->invalidate(); // Invalide la session actuelle
+        $request->session()->regenerateToken(); // Regénère le jeton CSRF
+
+        return redirect('/'); // Redirige vers la page d'accueil ou une autre page
+    }
 
     public function login(Request $request)
     {
@@ -84,12 +93,5 @@ class AuthController extends Controller
         Auth::login($user);
         // Redirection après l'inscription réussie
         return redirect()->intended('dashboard');
-    }
-
-    public function logout()
-    {
-        Auth::logout();
-
-        return redirect('login');
     }
 }
