@@ -14,15 +14,14 @@ class TravauxController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $person = Person::where('userId', $user->id)->first();
+        $person = Person::findOrFail($user->id);
         $userType = $person ? $person->type : null;
-
         if ($userType === 'Professeur') {
             $travaux = Travail::join('people', 'travaux.id_person', '=', 'people.id')
                 ->select('travaux.*', 'people.firstname')
                 ->get();
         } else {
-            $travaux = DB::select("select * from travaux");
+            $travaux = DB::select("select * from travaux where id_person=$user->id");
         }
         return view('travaux', compact('travaux','userType'));
     }

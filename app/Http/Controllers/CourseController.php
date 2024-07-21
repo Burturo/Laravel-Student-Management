@@ -20,12 +20,8 @@ class CourseController extends Controller
             $courses = Cour::join('people', 'courses.id_person', '=', 'people.id')
                 ->select('courses.*', 'people.firstname')
                 ->get();
-            // $courses = DB::select('
-            //         select c.*, p.firstname
-            //         from courses c, people p where c.id_person = p.id
-            //     ');
         } else {
-            $courses = DB::select("select * from courses");
+            $courses = DB::select("select * from courses where id_person=$user->id");
         }
         return view('course', compact('courses','userType'));
     }

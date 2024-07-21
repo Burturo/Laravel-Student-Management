@@ -174,7 +174,7 @@
                 totalCourriers += 1;
             }
 
-            var xValues = ["Courrier Envoyé",  "Courrier reçu"];
+            var xValues = ["Cours Envoyé",  "Travaux reçu"];
             var yValues = [resul_cour_env, resul_cour_rec,30];
             var barColors = ["#007716", "#FF7A00"];
 
